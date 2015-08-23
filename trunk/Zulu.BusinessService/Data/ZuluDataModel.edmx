@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PortablePointOfSaleModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="PortablePointOfSaleModelStoreContainer">
+          <EntitySet Name="Manufacturer" EntityType="PortablePointOfSaleModel.Store.Manufacturer" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Product" EntityType="PortablePointOfSaleModel.Store.Product" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Sale" EntityType="PortablePointOfSaleModel.Store.Sale" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="SaleProduct" EntityType="PortablePointOfSaleModel.Store.SaleProduct" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Setting" EntityType="PortablePointOfSaleModel.Store.Setting" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="User" EntityType="PortablePointOfSaleModel.Store.User" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Product_Manufacturer" Association="PortablePointOfSaleModel.Store.FK_Product_Manufacturer">
+            <End Role="Manufacturer" EntitySet="Manufacturer" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_User" Association="PortablePointOfSaleModel.Store.FK_Sale_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Sale" EntitySet="Sale" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleProduct_Sale" Association="PortablePointOfSaleModel.Store.FK_SaleProduct_Sale">
+            <End Role="Sale" EntitySet="Sale" />
+            <End Role="SaleProduct" EntitySet="SaleProduct" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Manufacturer">
+          <Key>
+            <PropertyRef Name="ManufacturerID" />
+          </Key>
+          <Property Name="ManufacturerID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="Description" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="Barcode" Type="nvarchar" MaxLength="150" />
+          <Property Name="ManufacturerID" Type="int" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="RemainingQuantity" Type="int" />
+        </EntityType>
+        <EntityType Name="Sale">
+          <Key>
+            <PropertyRef Name="SaleID" />
+          </Key>
+          <Property Name="SaleID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="VoucherNumber" Type="nvarchar" MaxLength="150" />
+          <Property Name="SellerID" Type="int" />
+          <Property Name="CounterNumber" Type="int" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="SaleTotal" Type="money" />
+          <Property Name="SaleTotalQuantity" Type="int" />
+          <Property Name="SaleStatus" Type="int" />
+          <Property Name="GiftVoucherAmount" Type="money" />
+        </EntityType>
+        <EntityType Name="SaleProduct">
+          <Key>
+            <PropertyRef Name="SaleProductID" />
+          </Key>
+          <Property Name="SaleProductID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="SaleID" Type="int" />
+          <Property Name="ProductBarcode" Type="nvarchar" MaxLength="150" />
+          <Property Name="UnitPrice" Type="money" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="250" />
+          <Property Name="TotalCost" Type="money" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="SettingID" />
+          </Key>
+          <Property Name="SettingID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="Value" Type="nvarchar" MaxLength="250" />
+          <Property Name="Description" Type="nvarchar" MaxLength="450" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="nvarchar" MaxLength="250" />
+          <Property Name="Fullname" Type="nvarchar" MaxLength="250" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="250" />
+          <Property Name="Salt" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_Product_Manufacturer">
+          <End Role="Manufacturer" Type="PortablePointOfSaleModel.Store.Manufacturer" Multiplicity="0..1" />
+          <End Role="Product" Type="PortablePointOfSaleModel.Store.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Manufacturer">
+              <PropertyRef Name="ManufacturerID" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="ManufacturerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_User">
+          <End Role="User" Type="PortablePointOfSaleModel.Store.User" Multiplicity="0..1" />
+          <End Role="Sale" Type="PortablePointOfSaleModel.Store.Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleProduct_Sale">
+          <End Role="Sale" Type="PortablePointOfSaleModel.Store.Sale" Multiplicity="0..1" />
+          <End Role="SaleProduct" Type="PortablePointOfSaleModel.Store.SaleProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="SaleID" />
+            </Principal>
+            <Dependent Role="SaleProduct">
+              <PropertyRef Name="SaleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PortablePointOfSaleModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="ZuluDataContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Manufacturers" EntityType="PortablePointOfSaleModel.Manufacturer" />
+          <EntitySet Name="Products" EntityType="PortablePointOfSaleModel.Product" />
+          <EntitySet Name="Sales" EntityType="PortablePointOfSaleModel.Sale" />
+          <EntitySet Name="SaleProducts" EntityType="PortablePointOfSaleModel.SaleProduct" />
+          <EntitySet Name="Users" EntityType="PortablePointOfSaleModel.User" />
+          <AssociationSet Name="FK_Product_Manufacturer" Association="PortablePointOfSaleModel.FK_Product_Manufacturer">
+            <End Role="Manufacturer" EntitySet="Manufacturers" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sale_User" Association="PortablePointOfSaleModel.FK_Sale_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Sale" EntitySet="Sales" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleProduct_Sale" Association="PortablePointOfSaleModel.FK_SaleProduct_Sale">
+            <End Role="Sale" EntitySet="Sales" />
+            <End Role="SaleProduct" EntitySet="SaleProducts" />
+          </AssociationSet>
+          <EntitySet Name="Settings" EntityType="PortablePointOfSaleModel.Setting" />
+        </EntityContainer>
+        <EntityType Name="Manufacturer">
+          <Key>
+            <PropertyRef Name="ManufacturerID" />
+          </Key>
+          <Property Type="Int32" Name="ManufacturerID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Products" Relationship="PortablePointOfSaleModel.FK_Product_Manufacturer" FromRole="Manufacturer" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Type="Int32" Name="ProductID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Barcode" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ManufacturerID" />
+          <Property Type="Int32" Name="Quantity" />
+          <NavigationProperty Name="Manufacturer" Relationship="PortablePointOfSaleModel.FK_Product_Manufacturer" FromRole="Product" ToRole="Manufacturer" />
+          <Property Type="Int32" Name="RemainingQuantity" />
+        </EntityType>
+        <EntityType Name="Sale">
+          <Key>
+            <PropertyRef Name="SaleID" />
+          </Key>
+          <Property Type="Int32" Name="SaleID" Nullable="false" />
+          <Property Type="String" Name="VoucherNumber" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="SellerID" />
+          <Property Type="Int32" Name="CounterNumber" />
+          <Property Type="DateTime" Name="CreatedOn" />
+          <Property Type="Decimal" Name="SaleTotal" Precision="19" Scale="4" />
+          <Property Type="Int32" Name="SaleTotalQuantity" />
+          <Property Type="Int32" Name="SaleStatus" />
+          <NavigationProperty Name="User" Relationship="PortablePointOfSaleModel.FK_Sale_User" FromRole="Sale" ToRole="User" />
+          <NavigationProperty Name="SaleProducts" Relationship="PortablePointOfSaleModel.FK_SaleProduct_Sale" FromRole="Sale" ToRole="SaleProduct" />
+          <Property Type="Decimal" Name="GiftVoucherAmount" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="SaleProduct">
+          <Key>
+            <PropertyRef Name="SaleProductID" />
+          </Key>
+          <Property Type="Int32" Name="SaleProductID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="SaleID" />
+          <Property Type="String" Name="ProductBarcode" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Type="Decimal" Name="UnitPrice" Precision="19" Scale="4" />
+          <Property Type="Int32" Name="Quantity" />
+          <Property Type="String" Name="ProductName" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="Decimal" Name="TotalCost" Precision="19" Scale="4" />
+          <NavigationProperty Name="Sale" Relationship="PortablePointOfSaleModel.FK_SaleProduct_Sale" FromRole="SaleProduct" ToRole="Sale" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Type="Int32" Name="UserID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Username" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Fullname" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="PasswordHash" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Salt" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sales" Relationship="PortablePointOfSaleModel.FK_Sale_User" FromRole="User" ToRole="Sale" />
+        </EntityType>
+        <Association Name="FK_Product_Manufacturer">
+          <End Type="PortablePointOfSaleModel.Manufacturer" Role="Manufacturer" Multiplicity="0..1" />
+          <End Type="PortablePointOfSaleModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Manufacturer">
+              <PropertyRef Name="ManufacturerID" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="ManufacturerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sale_User">
+          <End Type="PortablePointOfSaleModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="PortablePointOfSaleModel.Sale" Role="Sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Sale">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleProduct_Sale">
+          <End Type="PortablePointOfSaleModel.Sale" Role="Sale" Multiplicity="0..1" />
+          <End Type="PortablePointOfSaleModel.SaleProduct" Role="SaleProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sale">
+              <PropertyRef Name="SaleID" />
+            </Principal>
+            <Dependent Role="SaleProduct">
+              <PropertyRef Name="SaleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="SettingID" />
+          </Key>
+          <Property Type="Int32" Name="SettingID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Value" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="450" FixedLength="false" Unicode="true" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PortablePointOfSaleModelStoreContainer" CdmEntityContainer="ZuluDataContext">
+          <EntitySetMapping Name="Manufacturers">
+            <EntityTypeMapping TypeName="PortablePointOfSaleModel.Manufacturer">
+              <MappingFragment StoreEntitySet="Manufacturer">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ManufacturerID" ColumnName="ManufacturerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="PortablePointOfSaleModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="RemainingQuantity" ColumnName="RemainingQuantity" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ManufacturerID" ColumnName="ManufacturerID" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sales">
+            <EntityTypeMapping TypeName="PortablePointOfSaleModel.Sale">
+              <MappingFragment StoreEntitySet="Sale">
+                <ScalarProperty Name="GiftVoucherAmount" ColumnName="GiftVoucherAmount" />
+                <ScalarProperty Name="SaleStatus" ColumnName="SaleStatus" />
+                <ScalarProperty Name="SaleTotalQuantity" ColumnName="SaleTotalQuantity" />
+                <ScalarProperty Name="SaleTotal" ColumnName="SaleTotal" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CounterNumber" ColumnName="CounterNumber" />
+                <ScalarProperty Name="SellerID" ColumnName="SellerID" />
+                <ScalarProperty Name="VoucherNumber" ColumnName="VoucherNumber" />
+                <ScalarProperty Name="SaleID" ColumnName="SaleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleProducts">
+            <EntityTypeMapping TypeName="PortablePointOfSaleModel.SaleProduct">
+              <MappingFragment StoreEntitySet="SaleProduct">
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="ProductBarcode" ColumnName="ProductBarcode" />
+                <ScalarProperty Name="SaleID" ColumnName="SaleID" />
+                <ScalarProperty Name="SaleProductID" ColumnName="SaleProductID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="PortablePointOfSaleModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Fullname" ColumnName="Fullname" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="PortablePointOfSaleModel.Setting">
+              <MappingFragment StoreEntitySet="Setting">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SettingID" ColumnName="SettingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="ZuluDataModel">
+        <EntityTypeShape EntityType="PortablePointOfSaleModel.Manufacturer" Width="1.5" PointX="0.75" PointY="0.75" Height="1.5956835937500031" />
+        <EntityTypeShape EntityType="PortablePointOfSaleModel.Product" Width="1.5" PointX="2.75" PointY="0.75" Height="2.364889322916667" />
+        <EntityTypeShape EntityType="PortablePointOfSaleModel.Sale" Width="1.5" PointX="0.75" PointY="3.75" Height="2.5571907552083317" />
+        <EntityTypeShape EntityType="PortablePointOfSaleModel.SaleProduct" Width="1.5" PointX="2.75" PointY="3.75" Height="2.3648893229166674" />
+        <EntityTypeShape EntityType="PortablePointOfSaleModel.User" Width="1.5" PointX="4.75" PointY="0.75" Height="1.9802864583333246" />
+        <AssociationConnector Association="PortablePointOfSaleModel.FK_Product_Manufacturer" >
+          <ConnectorPoint PointX="2.25" PointY="1.6439925130208335" />
+          <ConnectorPoint PointX="2.75" PointY="1.6439925130208335" />
+        </AssociationConnector>
+        <AssociationConnector Association="PortablePointOfSaleModel.FK_Sale_User" >
+          <ConnectorPoint PointX="5.5" PointY="2.922587890625" />
+          <ConnectorPoint PointX="5.5" PointY="6.5307421874999987" />
+          <ConnectorPoint PointX="2.25" PointY="6.5307421874999987" />
+        </AssociationConnector>
+        <AssociationConnector Association="PortablePointOfSaleModel.FK_SaleProduct_Sale" >
+          <ConnectorPoint PointX="2.25" PointY="5.0285953776041659" />
+          <ConnectorPoint PointX="2.75" PointY="5.0285953776041659" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="PortablePointOfSaleModel.Setting" Width="1.5" PointX="7.375" PointY="2.375" Height="1.787985026041667" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
